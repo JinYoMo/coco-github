@@ -7021,7 +7021,7 @@ function connect(options) {
       error.name = err.name;
       error.stack = err.stack; // __NEXT_DIST_DIR is provided by webpack
 
-      source_map_support_1.rewriteStacktrace(error, "E:\\个人项目\\gitHub项目\\CoCo-GitHub\\.next");
+      source_map_support_1.rewriteStacktrace(error, "E:\\个人项目\\gitHub项目\\coco-github\\.next");
       return error;
     }
   };
