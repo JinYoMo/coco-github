@@ -1,4 +1,3 @@
- import axios from 'axios'
 import { request } from '../lib/api'
  const api=require('../lib/api')
  function Index(){

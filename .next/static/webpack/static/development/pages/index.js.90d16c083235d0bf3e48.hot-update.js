@@ -24,9 +24,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var api = __webpack_require__(/*! ../lib/api */ "./lib/api.js");
 
 function Index() {
+  Object(react__WEBPACK_IMPORTED_MODULE_2__["useEffect"])(function () {
+    axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/github/text', {
+      text: 123
+    });
+  });
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", null, "Index");
 } //服务端和客户端都会执行
 
@@ -77,4 +83,4 @@ Index.getInitialProps = /*#__PURE__*/function () {
 /***/ })
 
 })
-//# sourceMappingURL=index.js.a60bbe5c1b110334a472.hot-update.js.map
+//# sourceMappingURL=index.js.90d16c083235d0bf3e48.hot-update.js.map
