@@ -31,11 +31,14 @@ const footerStyle = {
 // const Comp = ({ color, children, style }) => <div style={{ color, ...style }}>{children}</div>
 
 function MyLayout ({ children, user, logout, router }) {
-  const [search, setSearch] = useState('');
+  const urlQuery = router.query && router.query.query;
+  const [search, setSearch] = useState(urlQuery || ''); //保证刷新后输入框与链接query一致 设置默认值
   const handleSearchChange = useCallback((event) => {
     setSearch(event.target.value)
   }, [setSearch])
-  const handleOnSearch = useCallback(() => { }, [])
+  const handleOnSearch = useCallback(() => {
+    router.push(`/search?query=${search}`)
+  }, [search])
   const handleLogout = useCallback(() => { logout() }, [logout])
   const handleGoToOAuth = useCallback(e => {
     e.preventDefault();  //取消默认跳转
@@ -63,7 +66,9 @@ function MyLayout ({ children, user, logout, router }) {
         <Container renderer={<div className="header-inner" />}>
           <div className="header-left">
             <div className="logo">
-              <Icon type="github" style={githubIconStyle} />
+              <Link href="/">
+                <Icon type="github" style={githubIconStyle} />
+              </Link>
             </div>
             <div>
               <Input.Search placeholder="搜索仓库" value={search} onChange={handleSearchChange} onSearch={handleOnSearch} />
@@ -98,9 +103,6 @@ function MyLayout ({ children, user, logout, router }) {
         develop by JinYoMo@<a href="https://github.com/JinYoMo/coco-github">coco-github</a>
       </Footer>
       <style jsx>{`
-        .content{
-          color:red;
-        }
          .header-inner{
            display:flex;
            justify-content:space-between; 
@@ -115,11 +117,14 @@ function MyLayout ({ children, user, logout, router }) {
           height:100%;
         }
         .ant-layout{
-          height:100%;
+          min-height:100%;
         }
         .ant-layout-header{
           padding-left:0;
           padding-right:0;
+        }
+        .ant-layout-content{
+          background:#fff;
         }
       `}
       </style>

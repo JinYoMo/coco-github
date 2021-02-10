@@ -1,6 +1,8 @@
 import App,{Container} from 'next/app'
 import {Provider} from 'react-redux'
 import Router from 'next/router'
+import Link from 'next/link'
+import axios from 'axios'
 
 import 'antd/dist/antd.css'
 
@@ -9,13 +11,12 @@ import PageLoading from '../components/PageLoading'
 
 import store from '../store/store'
 import testHoc from '../lib/with-redux'
-import Link from 'next/link'
 
 //nextjs自定义App
 class MyApp extends App {
   state={
     context:"value",
-    loading:false
+    loading:false  //控制loading
   }
   startLoading=()=>{
     this.setState({
@@ -37,6 +38,10 @@ class MyApp extends App {
     Router.events.on('routeChangeStart',this.startLoading);
     Router.events.on('routeChangeComplete',this.stopLoading);
     Router.events.on('routeChangeError',this.stopLoading);
+    
+    axios
+    .get('/github/search/repositories?q=react')
+    .then(resp=>console.log(resp))
   }
  
   componentWillUnmount(){

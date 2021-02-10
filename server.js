@@ -5,6 +5,7 @@ const session=require('koa-session')
 const Redis =require('ioredis')
 
 const auth=require('./server/auth')
+const api=require('./server/api')
 
 const RedisSessionStore=require('./server/session-store')
 
@@ -27,6 +28,8 @@ app.prepare().then(()=>{
   server.use(session(SESSION_CONFIG,server))
   //配置处理github OAuth的登录及登出
   auth(server)
+  //接口代理
+  api(server)
   //解决页面刷新路由映射问题 /b/2
   router.get('/b/:id',async (ctx)=>{
     const id=ctx.params.id;
