@@ -62967,9 +62967,6 @@ var MyApp = /*#__PURE__*/function (_App) {
       next_router__WEBPACK_IMPORTED_MODULE_13___default.a.events.on('routeChangeStart', this.startLoading);
       next_router__WEBPACK_IMPORTED_MODULE_13___default.a.events.on('routeChangeComplete', this.stopLoading);
       next_router__WEBPACK_IMPORTED_MODULE_13___default.a.events.on('routeChangeError', this.stopLoading);
-      axios__WEBPACK_IMPORTED_MODULE_15___default.a.get('/github/search/repositories?q=react').then(function (resp) {
-        return console.log(resp);
-      });
     }
   }, {
     key: "componentWillUnmount",
