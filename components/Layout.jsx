@@ -2,8 +2,13 @@ import { useState, useCallback } from 'react'
 import getConfig from 'next/config'
 import { connect } from 'react-redux'
 
+import { withRouter } from 'next/router'
+import axios from 'axios'
+
 import Link from 'next/link'
 import { Button, Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from 'antd'
+
+import { logout } from '../store/store'
 
 const { Header, Content, Footer } = Layout
 
@@ -25,16 +30,30 @@ const footerStyle = {
 
 // const Comp = ({ color, children, style }) => <div style={{ color, ...style }}>{children}</div>
 
-function MyLayout ({ children, user }) {
+function MyLayout ({ children, user, logout, router }) {
   const [search, setSearch] = useState('');
   const handleSearchChange = useCallback((event) => {
     setSearch(event.target.value)
   }, [setSearch])
   const handleOnSearch = useCallback(() => { }, [])
+  const handleLogout = useCallback(() => { logout() }, [logout])
+  const handleGoToOAuth = useCallback(e => {
+    e.preventDefault();  //取消默认跳转
+    axios.get(`prepare-auth?url=${router.asPath}`)
+      .then(resp => {
+        if (resp.status === 200) {
+          location.href = publicRuntimeConfig.OAUTH_URL
+        } else {
+          console.log('prepare auth failed', resp);
+        }
+      }).catch(err => {
+        console.log('prepare auth failed', err)
+      })
+  }, [])  //[]表示不依赖任何state和props的内容
   const userDropDown = (
     <Menu>
       <Menu.Item>
-        <a href="javascript:void(0)">登出</a>
+        <a onClick={handleLogout}>登出</a>
       </Menu.Item>
     </Menu>
   )
@@ -61,8 +80,8 @@ function MyLayout ({ children, user }) {
                   </Dropdown>
                 ) : (
                     <Tooltip title="点击进行登录">
-                      {/* 跳转github OAutn连接  */}
-                      <a href={publicRuntimeConfig.OAUTH_URL} >
+                      {/* 跳转github OAutn连接 使用prepare-auth该接口是保证在不同页面登录均维持该页面状态 相当于GET请求*/}
+                      <a href={`prepare-auth?url=${router.asPath}`} >
                         <Avatar size={40} icon="user" />
                       </a>
                     </Tooltip>
@@ -112,4 +131,8 @@ export default connect(function mapState (state) {
   return {
     user: state.user
   }
-})(MyLayout)
+}, function mapReducer (dispatch) {
+  return {
+    logout: () => dispatch(logout())
+  }
+})(withRouter(MyLayout))

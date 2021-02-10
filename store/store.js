@@ -3,17 +3,43 @@ import {createStore,combineReducers,applyMiddleware} from 'redux';
 import ReduxThunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension'
 
+import axios from 'axios'
+
 const userInitialState={}
+const LOGOUT='LOGOUT'
 
 function userReducer(state=userInitialState,action){
   switch (action.type){
+    case LOGOUT:{
+      return {}   //将user清空
+    }
     default:
       return state
   }
 }
+/**
+ * {
+ *   user:{}
+ * }
+ */
 const allReducers=combineReducers({
   user:userReducer
 })
+//action creators
+export function logout(){
+  return dispatch =>{
+    axios.post('/logout')
+    .then(resp=>{
+      if(resp.status===200){
+        dispatch({type:LOGOUT})
+      }else{
+        console.log('Logout failed',resp)
+      }
+    }).catch(err=>{
+      console.log('Logout failed',err)
+    })
+  }
+}
 
 // // console.log(store.getState())  //获取到state
 // // store.dispatch({type:'ADD'})  //再次执行reducer，将action传入 从而更新state

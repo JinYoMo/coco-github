@@ -25,7 +25,7 @@ app.prepare().then(()=>{
     store:new RedisSessionStore(redis)  //用来存取session内容的连接数据库redis存取的功能
   }
   server.use(session(SESSION_CONFIG,server))
-  //配置处理github OAuth的登录
+  //配置处理github OAuth的登录及登出
   auth(server)
   //解决页面刷新路由映射问题 /b/2
   router.get('/b/:id',async (ctx)=>{
