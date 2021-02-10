@@ -35,11 +35,11 @@ class MyApp extends App {
     const {Component,pageProps,reduxStore}=this.props
     return(
       <Container>
-        <Layout>
-          <Provider store={reduxStore}>
+        <Provider store={reduxStore}>
+          <Layout>
               <Component {...pageProps}/>
-          </Provider>
-        </Layout>
+          </Layout>
+        </Provider>
       </Container>
     )
   }

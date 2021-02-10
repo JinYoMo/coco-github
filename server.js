@@ -52,6 +52,7 @@ app.prepare().then(()=>{
   // 传入的方法为中间件 多数请求均会调用该方法
   server.use(async(ctx,next)=>{
     // ctx.cookies.set('id','userid:xxx')
+    ctx.req.session=ctx.session;
     await handle(ctx.req,ctx.res);  //nextjs兼容各种nodejs的http框架 所以使用ctx.req,ctx.res
     ctx.respond=false;
   })

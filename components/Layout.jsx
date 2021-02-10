@@ -1,10 +1,15 @@
 import { useState, useCallback } from 'react'
+import getConfig from 'next/config'
+import { connect } from 'react-redux'
+
 import Link from 'next/link'
-import { Button, Layout, Icon, Input, Avatar } from 'antd'
+import { Button, Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from 'antd'
 
 const { Header, Content, Footer } = Layout
 
 import Container from './Container'
+
+const { publicRuntimeConfig } = getConfig()
 
 //style写在外边原因：githubIconStyle 保证对象为同一个 避免重新渲染
 const githubIconStyle = {
@@ -20,12 +25,19 @@ const footerStyle = {
 
 // const Comp = ({ color, children, style }) => <div style={{ color, ...style }}>{children}</div>
 
-export default ({ children }) => {
+function MyLayout ({ children, user }) {
   const [search, setSearch] = useState('');
   const handleSearchChange = useCallback((event) => {
     setSearch(event.target.value)
   }, [setSearch])
   const handleOnSearch = useCallback(() => { }, [])
+  const userDropDown = (
+    <Menu>
+      <Menu.Item>
+        <a href="javascript:void(0)">登出</a>
+      </Menu.Item>
+    </Menu>
+  )
   return (
     <Layout>
       <Header>
@@ -40,7 +52,22 @@ export default ({ children }) => {
           </div>
           <div className="header-right">
             <div className="user">
-              <Avatar size={40} icon="user" />
+              {
+                user && user.id ? (
+                  <Dropdown overlay={userDropDown}>
+                    <a href='/' >
+                      <Avatar size={40} src={user.avatar_url} />
+                    </a>
+                  </Dropdown>
+                ) : (
+                    <Tooltip title="点击进行登录">
+                      {/* 跳转github OAutn连接  */}
+                      <a href={publicRuntimeConfig.OAUTH_URL} >
+                        <Avatar size={40} icon="user" />
+                      </a>
+                    </Tooltip>
+                  )
+              }
             </div>
           </div>
         </Container>
@@ -80,3 +107,9 @@ export default ({ children }) => {
     </Layout>
   )
 }
+//export default 必须是一个函数 connect返回的就是函数
+export default connect(function mapState (state) {
+  return {
+    user: state.user
+  }
+})(MyLayout)
