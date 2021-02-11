@@ -6,7 +6,7 @@ module.exports=(server)=>{
    server.use(async(ctx,next)=>{
      const path=ctx.path;
      if(path.startsWith('/github/')){
-       console.log(ctx.body.request)
+      //  console.log(ctx.body.request)
         const session=ctx.session;
         const githubAuth=session&&session.githubAuth
         const headers={}

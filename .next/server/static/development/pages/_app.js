@@ -2827,11 +2827,7 @@ var MyApp = /*#__PURE__*/function (_App) {
           reduxStore = _this$props.reduxStore;
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(next_app__WEBPACK_IMPORTED_MODULE_11__["Container"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(react_redux__WEBPACK_IMPORTED_MODULE_12__["Provider"], {
         store: reduxStore
-      }, this.state.loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(_components_PageLoading__WEBPACK_IMPORTED_MODULE_18__["default"], null) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(_components_Layout__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_14___default.a, {
-        href: "/"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement("a", null, "Index")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_14___default.a, {
-        href: "/detail"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement("a", null, "Detail")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(Component, pageProps))));
+      }, this.state.loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(_components_PageLoading__WEBPACK_IMPORTED_MODULE_18__["default"], null) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(_components_Layout__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(Component, pageProps))));
     }
   }], [{
     key: "getInitialProps",
