@@ -51061,7 +51061,7 @@ Index.getInitialProps = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ 2:
+/***/ 1:
 /*!************************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2F&absolutePagePath=E%3A%5C%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE%5CgitHub%E9%A1%B9%E7%9B%AE%5Ccoco-github%5Cpages%5Cindex.js ***!
   \************************************************************************************************************************************************************************/
@@ -51084,5 +51084,5 @@ module.exports = dll_bddb6eed8fbd46b918fd;
 
 /***/ })
 
-},[[2,"static/runtime/webpack.js"]]]);
+},[[1,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=index.js.map
