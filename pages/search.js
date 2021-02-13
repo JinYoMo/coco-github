@@ -1,6 +1,8 @@
+import {memo} from 'react'
 import {withRouter} from 'next/router'
 import {Row,Col,List} from 'antd'  //栅格
 import Link from 'next/link'
+import Router from 'next/router'
 
 import api from '../lib/api'
 
@@ -39,8 +41,24 @@ const SORT_TYPES=[
  * page：分页页面
  */
 
+ const selectedItemStyle={
+   borderLeft:'2px solid #e36209',
+   fontWeight:100
+ }
+//memo方法作用：name,query,lang,sort,order 这些参数无变化，则不会被重新渲染
+ const FilterLink=memo(({name,query,lang,sort,order})=>{
+    let queryString=`?query=${query}`
+    if(lang) queryString+=`&lang=${lang}`
+    if(sort) queryString+=`&sort=${sort}&order=${order||'desc'}`
+
+    return <Link href={`/search${queryString}`}><a>{name}</a></Link>
+ })
 function Search({router,repos}){
   console.log(repos)
+  
+  // const {sort,order,lang,query}=router.query
+  const {...querys}=router.query
+  const {sort,order,lang}=router.query
   return (
     <div className="root">
       <Row gutter={20}>
@@ -51,11 +69,10 @@ function Search({router,repos}){
              style={{marginBottom:20}}
              dataSource={LANGUAGE}
              renderItem={item=>{
+               const selected=lang===item
                return (
-                 <List.Item>
-                   <Link href="/search">
-                      <a>{item}</a>
-                   </Link>
+                 <List.Item style={selected?selectedItemStyle:null}>
+                   {selected?<span>{item}</span>:<FilterLink {...querys} lang={item} name={item}/>}
                  </List.Item>
                )
              }}
@@ -63,20 +80,32 @@ function Search({router,repos}){
             <List 
              bordered
              header={<span className="list-header">排序</span>}
-             style={{marginBottom:20}}
              dataSource={SORT_TYPES}
              renderItem={item=>{
+               let selected=false
+               if(item.name==='Best Match'&&!sort){
+                 selected=true
+               }else if(item.value===sort&&item.order===order){
+                 selected=true
+               }
                return (
-                 <List.Item>
-                   <Link href="/search">
-                      <a>{item.name}</a>
-                   </Link>
+                <List.Item style={selected?selectedItemStyle:null}>
+                  {selected?<span>{item.name}</span>:<FilterLink {...querys} sort={item.value} order={item.order} name={item.name}/>}
                  </List.Item>
                )
              }}
            />
         </Col>
       </Row>
+      <style jsx>{`
+        .root{
+          padding:20px 0;
+        }
+        .list-header{
+          font-weight:800;
+          font-size:16px;
+        }
+        `}</style>
     </div>
   )
   

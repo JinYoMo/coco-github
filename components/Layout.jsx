@@ -40,19 +40,19 @@ function MyLayout ({ children, user, logout, router }) {
     router.push(`/search?query=${search}`)
   }, [search])
   const handleLogout = useCallback(() => { logout() }, [logout])
-  const handleGoToOAuth = useCallback(e => {
-    e.preventDefault();  //取消默认跳转
-    axios.get(`prepare-auth?url=${router.asPath}`)
-      .then(resp => {
-        if (resp.status === 200) {
-          location.href = publicRuntimeConfig.OAUTH_URL
-        } else {
-          console.log('prepare auth failed', resp);
-        }
-      }).catch(err => {
-        console.log('prepare auth failed', err)
-      })
-  }, [])  //[]表示不依赖任何state和props的内容
+  // const handleGoToOAuth = useCallback(e => {
+  //   e.preventDefault();  //取消默认跳转
+  //   axios.get(`prepare-auth?url=${router.asPath}`)
+  //     .then(resp => {
+  //       if (resp.status === 200) {
+  //         location.href = publicRuntimeConfig.OAUTH_URL
+  //       } else {
+  //         console.log('prepare auth failed', resp);
+  //       }
+  //     }).catch(err => {
+  //       console.log('prepare auth failed', err)
+  //     })
+  // }, [])  //[]表示不依赖任何state和props的内容
   const userDropDown = (
     <Menu>
       <Menu.Item>
