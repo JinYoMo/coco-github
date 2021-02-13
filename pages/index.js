@@ -6,6 +6,7 @@ import Router,{withRouter} from 'next/router'
 import LRU from 'lru-cache'
 
 import Repo from '../components/Repo'
+import {cacheArray} from '../lib/repo-basic-cache'
 
 const api=require('../lib/api')
 
@@ -43,6 +44,16 @@ const isServer=typeof window ==='undefined'
       }, 1000 * 60 * 10)  //10min必须清空策略
     }
   },[userRepos,userStaredRepos])  //监听参数发生变化则会调用
+
+   //每次调用存储数据
+   useEffect(()=>{
+    //客户端情况下保存
+    if(!isServer){
+      cacheArray(userRepos)
+      cacheArray(userStaredRepos)
+    } 
+  })
+
    if(!user||!user.id){
      return <div className="root">
        <p>亲，您还没有登录哦~</p>
@@ -107,7 +118,7 @@ const isServer=typeof window ==='undefined'
               color:#777;
             }
             .bio{
-              font-size:20px;
+              margin-top: 20px;
               color:#333;
             }
             .avatar{

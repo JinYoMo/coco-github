@@ -1,8 +1,11 @@
-import {memo} from 'react'
+import {memo,isValidElement,useEffect} from 'react'
 import {withRouter} from 'next/router'
-import {Row,Col,List} from 'antd'  //栅格
+import {Row,Col,List,Pagination} from 'antd'  //栅格
 import Link from 'next/link'
 import Router from 'next/router'
+
+import Repo from '../components/Repo'
+import {cacheArray} from '../lib/repo-basic-cache'
 
 import api from '../lib/api'
 
@@ -45,20 +48,35 @@ const SORT_TYPES=[
    borderLeft:'2px solid #e36209',
    fontWeight:100
  }
+ function noop(){}
+
+ const per_page=20
+
+ const isServer=typeof window==='undefined'
 //memo方法作用：name,query,lang,sort,order 这些参数无变化，则不会被重新渲染
- const FilterLink=memo(({name,query,lang,sort,order})=>{
+ const FilterLink=memo(({name,query,lang,sort,order,page})=>{
     let queryString=`?query=${query}`
     if(lang) queryString+=`&lang=${lang}`
     if(sort) queryString+=`&sort=${sort}&order=${order||'desc'}`
+    if(page) queryString+=`&page=${page}`
+    queryString+=`&per_page=${per_page}`
 
-    return <Link href={`/search${queryString}`}><a>{name}</a></Link>
+    return <Link href={`/search${queryString}`}>
+      {isValidElement(name)?name:<a>{name}</a>}
+    </Link>
  })
 function Search({router,repos}){
   console.log(repos)
   
   // const {sort,order,lang,query}=router.query
   const {...querys}=router.query
-  const {sort,order,lang}=router.query
+  const {sort,order,lang,page}=router.query
+  //每次调用存储数据
+  useEffect(()=>{
+    //客户端情况下保存
+    if(!isServer) cacheArray(repos.items)
+  })
+
   return (
     <div className="root">
       <Row gutter={20}>
@@ -96,6 +114,26 @@ function Search({router,repos}){
              }}
            />
         </Col>
+        <Col span={18}>
+            <h3 className="repos-title">{repos.total_count} 个仓库</h3>
+            {
+              repos.items.map(repo => <Repo repo={repo} key={repo.id} />)
+            }
+            <div className="pagination">
+              <Pagination
+                pageSize={per_page}
+                current={Number(page) || 1}
+                total={1000}
+                onChange={noop}
+                itemRender={(page, type, ol) => {
+                  const p =
+                    type === 'page' ? page : type === 'prev' ? page - 1 : page + 1
+                  const name = type === 'page' ? page : ol
+                  return <FilterLink {...querys} page={p} name={name} />
+                }}
+              />
+          </div>
+        </Col>
       </Row>
       <style jsx>{`
         .root{
@@ -104,6 +142,15 @@ function Search({router,repos}){
         .list-header{
           font-weight:800;
           font-size:16px;
+        }
+        .repos-title{
+          border-bottom:1px solid #eee;
+          font-size:24px;
+          line-height:50px;
+        }
+        .pagination{
+          padding:20px;
+          text-align:center;
         }
         `}</style>
     </div>
@@ -125,6 +172,7 @@ Search.getInitialProps=async ({ctx})=>{
   if(lang) queryString+=`+language:${lang}`
   if(sort) queryString+=`&sort=${sort}&order=${order||'desc'}`
   if(page) queryString+=`&page=${page}`
+  queryString+=`&per_page=${per_page}`
   //调用搜索列表接口
   const result=await api.request({
     url:`/search/repositories${queryString}`
