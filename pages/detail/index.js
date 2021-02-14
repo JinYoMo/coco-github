@@ -1,12 +1,19 @@
 import withRepoBasic from '../../components/with-repo-basic'
+import api from '../../lib/api'
 
-function Detail ({text}){
-return <span>Detail Index {text}</span>
+import MDRenderer from '../../components/MarkdownRenderer'
+function Detail ({readme}){
+  return <MDRenderer content={readme.content} isBase64={true} />
 }
 
-Detail.getInitialProps=async()=>{
+//调用获取readme接口
+Detail.getInitialProps=async({ctx:{query:{owner,name},req,res}})=>{
+   const readmeResp = await api.request({
+     url:`/repos/${owner}/${name}/readme`
+   },req,res)
+
    return {
-     text:123
+     readme:readmeResp.data
    }
 }
 

@@ -45,10 +45,10 @@ const isServer=typeof window ==='undefined'
     }
   },[userRepos,userStaredRepos])  //监听参数发生变化则会调用
 
-   //每次调用存储数据
-   useEffect(()=>{
+  //每次调用存储数据
+  useEffect(()=>{
     //客户端情况下保存
-    if(!isServer){
+    if(!isServer&&user&&user.id){
       cacheArray(userRepos)
       cacheArray(userStaredRepos)
     } 
