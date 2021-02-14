@@ -1,7 +1,10 @@
+import dynamid from 'next/dynamic'
 import withRepoBasic from '../../components/with-repo-basic'
 import api from '../../lib/api'
 
-import MDRenderer from '../../components/MarkdownRenderer'
+const MDRenderer = dynamid(()=>import('../../components/MarkdownRenderer'),{
+  loading:()=><p>Loading</p>
+})
 function Detail ({readme}){
   return <MDRenderer content={readme.content} isBase64={true} />
 }
