@@ -1,13 +1,11 @@
 import Link from 'next/link'
 import { Icon } from 'antd'
-import moment from 'moment'
+import { getLastUpdated } from '../lib/utils'
 
 function getLicense (license) {
   return license ? `${license.spdx_id} license` : ''
 }
-function getLastUpdated (time) {
-  return moment(time).fromNow() //转变为 '一分钟之前'
-}
+
 export default ({ repo }) => {
   return (
     <div className="root">

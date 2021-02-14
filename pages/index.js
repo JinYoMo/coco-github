@@ -48,7 +48,7 @@ const isServer=typeof window ==='undefined'
   //每次调用存储数据
   useEffect(()=>{
     //客户端情况下保存
-    if(!isServer&&user&&user.id){
+    if(!isServer){
       cacheArray(userRepos)
       cacheArray(userStaredRepos)
     } 
