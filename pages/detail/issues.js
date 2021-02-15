@@ -1,5 +1,5 @@
 import dynamid from 'next/dynamic'
-import {useState,useCallback} from 'react'
+import {useState,useCallback,useEffect} from 'react'
 import {Avatar,Button,Select,Spin} from 'antd'
 import withRepoBasic from '../../components/with-repo-basic'
 import SearchUser from '../../components/SearchUser'
@@ -11,6 +11,9 @@ import { getLastUpdated } from '../../lib/utils'
 const MDRenderer = dynamid(()=>import('../../components/MarkdownRenderer'),{
   loading:()=><p>Loading</p>
 })
+
+//优化labels标签缓存 使得不需要每次进入页面都重新缓存
+const CACHE={}
 
 function IssueDetail({issue}){
   return (
@@ -54,6 +57,9 @@ function IssueItem({issue}){
           <div className="main-info">
             <h6>
               <span>{issue.title}</span>
+              {
+                issue.labels.map(label=><Label label={label} key={label.id} />)
+              }
             </h6>
             <p className="sub-info">
               <span>Updated at {getLastUpdated(issue.updated_at)}</span>
@@ -108,6 +114,26 @@ function makeQuery(creator,state,labels){
     
    return `?${arr.join('&')}`
 }
+//Label组件 用于在标题上显示label标签
+function Label({label}){
+  return (
+    <>
+      <span className="label" style={{backgroundColor:`#${label.color}`}}>{label.name}</span>
+      <style jsx>{`
+        .label {
+          display: inline-block;
+          line-height: 20px;
+          margin-left: 15px;
+          padding: 3px 10px;
+          border-radius: 3px;
+          font-size: 14px;
+        }
+      `}</style>
+    </>
+  )
+}
+
+const isServer=typeof window === 'undefined'
 
 const Option=Select.Option
 function Issues ({owner,name,initialIssues,labels}){
@@ -118,6 +144,12 @@ function Issues ({owner,name,initialIssues,labels}){
   const [label,setLabel]=useState([])
   const [issues,setIssues]=useState(initialIssues)
   const [fetching,setFetching]=useState(false)
+
+  useEffect(()=>{
+    if(!isServer){
+      CACHE[`${owner}/${name}`]=labels
+    }
+  },[owner,name,labels])
 
   const handleCreatorChange=useCallback((value)=>{
     setCreator(value)
@@ -130,7 +162,8 @@ function Issues ({owner,name,initialIssues,labels}){
   const handleLabelChange=useCallback((value)=>{
     setLabel(value)
   },[])
-
+ 
+  //查询搜索条件下的列表
   const handleSearch=useCallback(()=>{
     setFetching(true)
     //search
@@ -138,6 +171,7 @@ function Issues ({owner,name,initialIssues,labels}){
       url:`/repos/${owner}/${name}/issues${makeQuery(creator,state,label)}`
     })
     .then(resp=>{
+      console.log(resp.data)
       setIssues(resp.data)
       setFetching(false)
     }).catch(err=>{
@@ -190,13 +224,13 @@ function Issues ({owner,name,initialIssues,labels}){
 
 Issues.getInitialProps=async({ctx})=>{
   const {owner,name}=ctx.query
-  
+  const full_name=`${owner}/${name}`
   //Promise.all可以让两个异步执行的操作并行执行 互不干扰
   const fetchs=await Promise.all([
     await api.request({
       url:`/repos/${owner}/${name}/issues`
     },ctx.req,ctx.res),
-    await api.request({
+    CACHE[full_name]?Promise.resolve({data:CACHE[full_name]}):await api.request({
       url:`/repos/${owner}/${name}/labels`
     },ctx.req,ctx.res)
   ])
